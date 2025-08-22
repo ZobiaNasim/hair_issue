@@ -3,8 +3,8 @@ from PIL import Image
 from io import BytesIO
 import streamlit as st
 
-# Initialize client (Gemini Developer API example)
-client = genai.Client(api_key=st.secrets["AIzaSyAl-FTx28S32bsyu7HdlVMgvo8zLnaBLxQ"])
+# ✅ Hardcode the API key directly (not using st.secrets)
+client = genai.Client(api_key="AIzaSyAl-FTx28S32bsyu7HdlVMgvo8zLnaBLxQ")
 
 st.title("Hair Image Generator")
 

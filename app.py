@@ -1,4 +1,4 @@
-from google import genai
+import google.genai as genai
 from google.genai import types
 from PIL import Image
 from io import BytesIO
@@ -40,4 +40,5 @@ if st.button("Generate Image"):
             break
     else:
         st.error("❌ No image returned—try adjusting the description.")
+
 

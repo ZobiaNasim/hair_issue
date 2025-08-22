@@ -1,11 +1,10 @@
 import google.genai as genai
-from google.genai import types
 from PIL import Image
 from io import BytesIO
 import streamlit as st
 
 # Initialize client (Gemini Developer API example)
-client = genai.Client(api_key="AIzaSyAl-FTx28S32bsyu7HdlVMgvo8zLnaBLxQ")
+client = genai.Client(api_key=st.secrets["AIzaSyAl-FTx28S32bsyu7HdlVMgvo8zLnaBLxQ"])
 
 st.title("Hair Image Generator")
 
@@ -13,7 +12,7 @@ st.title("Hair Image Generator")
 category = "Hair"
 
 # User input only for description
-description = st.text_input("Describe the what you want ")
+description = st.text_input("Describe the hair issue you want shown:")
 
 if st.button("Generate Image"):
     prompt = f"""
@@ -22,23 +21,24 @@ if st.button("Generate Image"):
     specifically showing the issue of {description}.
     """
 
-
     with st.spinner("Generating image..."):
         response = client.models.generate_content(
             model="gemini-2.0-flash-preview-image-generation",
             contents=prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=["IMAGE", "TEXT"]
+            config=genai.types.GenerateContentConfig(
+                response_modalities=["IMAGE"]
             )
         )
 
     # Extract and display image
+    image_shown = False
     for part in response.candidates[0].content.parts:
-        if part.inline_data:
+        if hasattr(part, "inline_data") and part.inline_data:
             img = Image.open(BytesIO(part.inline_data.data))
             st.image(img, caption=description)
+            image_shown = True
             break
-    else:
-        st.error("❌ No image returned—try adjusting the description.")
 
+    if not image_shown:
+        st.error("❌ No image returned — try adjusting the description.")
 
